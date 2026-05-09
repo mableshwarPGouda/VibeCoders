@@ -15,6 +15,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppSettingsRouteImport } from './routes/_app/settings'
 import { Route as AppDashboardRouteImport } from './routes/_app/dashboard'
 import { Route as AppChatsRouteImport } from './routes/_app/chats'
+import { Route as AppChatsIndexRouteImport } from './routes/_app/chats.index'
 import { Route as AppQueriesNewRouteImport } from './routes/_app/queries.new'
 import { Route as AppQueriesIdRouteImport } from './routes/_app/queries.$id'
 import { Route as AppProfileIdRouteImport } from './routes/_app/profile.$id'
@@ -49,6 +50,11 @@ const AppChatsRoute = AppChatsRouteImport.update({
   path: '/chats',
   getParentRoute: () => AppRoute,
 } as any)
+const AppChatsIndexRoute = AppChatsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppChatsRoute,
+} as any)
 const AppQueriesNewRoute = AppQueriesNewRouteImport.update({
   id: '/queries/new',
   path: '/queries/new',
@@ -80,17 +86,18 @@ export interface FileRoutesByFullPath {
   '/profile/$id': typeof AppProfileIdRoute
   '/queries/$id': typeof AppQueriesIdRoute
   '/queries/new': typeof AppQueriesNewRoute
+  '/chats/': typeof AppChatsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
-  '/chats': typeof AppChatsRouteWithChildren
   '/dashboard': typeof AppDashboardRoute
   '/settings': typeof AppSettingsRoute
   '/chats/$id': typeof AppChatsIdRoute
   '/profile/$id': typeof AppProfileIdRoute
   '/queries/$id': typeof AppQueriesIdRoute
   '/queries/new': typeof AppQueriesNewRoute
+  '/chats': typeof AppChatsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -104,6 +111,7 @@ export interface FileRoutesById {
   '/_app/profile/$id': typeof AppProfileIdRoute
   '/_app/queries/$id': typeof AppQueriesIdRoute
   '/_app/queries/new': typeof AppQueriesNewRoute
+  '/_app/chats/': typeof AppChatsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -117,17 +125,18 @@ export interface FileRouteTypes {
     | '/profile/$id'
     | '/queries/$id'
     | '/queries/new'
+    | '/chats/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/login'
-    | '/chats'
     | '/dashboard'
     | '/settings'
     | '/chats/$id'
     | '/profile/$id'
     | '/queries/$id'
     | '/queries/new'
+    | '/chats'
   id:
     | '__root__'
     | '/'
@@ -140,6 +149,7 @@ export interface FileRouteTypes {
     | '/_app/profile/$id'
     | '/_app/queries/$id'
     | '/_app/queries/new'
+    | '/_app/chats/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -192,6 +202,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppChatsRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/chats/': {
+      id: '/_app/chats/'
+      path: '/'
+      fullPath: '/chats/'
+      preLoaderRoute: typeof AppChatsIndexRouteImport
+      parentRoute: typeof AppChatsRoute
+    }
     '/_app/queries/new': {
       id: '/_app/queries/new'
       path: '/queries/new'
@@ -225,10 +242,12 @@ declare module '@tanstack/react-router' {
 
 interface AppChatsRouteChildren {
   AppChatsIdRoute: typeof AppChatsIdRoute
+  AppChatsIndexRoute: typeof AppChatsIndexRoute
 }
 
 const AppChatsRouteChildren: AppChatsRouteChildren = {
   AppChatsIdRoute: AppChatsIdRoute,
+  AppChatsIndexRoute: AppChatsIndexRoute,
 }
 
 const AppChatsRouteWithChildren = AppChatsRoute._addFileChildren(
